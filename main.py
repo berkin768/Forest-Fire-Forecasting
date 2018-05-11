@@ -1,7 +1,4 @@
 import os
-import numpy as np
-from numpy import array
-from numpy import genfromtxt  # to parse csv file into np array
 import pandas as pd
 
 
@@ -12,12 +9,15 @@ def dataPreperation(data):
 def readData():
     folderPath = os.getcwd()
     filePath = folderPath + '/dataset/' + 'forestfires.csv'
-
-    return filePath
+    dataset = pd.read_csv(filePath)
+    return dataset
 
 
 def main():
-    readData()
+    dataset = readData()
+    test = pd.get_dummies(dataset)
+    test
+    print(test)
 
 
 if __name__ == '__main__':

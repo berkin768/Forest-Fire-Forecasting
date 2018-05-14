@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 
-
 def dataPreperation(data):
     return data
 
@@ -12,12 +11,19 @@ def readData():
     dataset = pd.read_csv(filePath)
     return dataset
 
+def getFeatures(dataset):
+    X = dataset.loc[:, dataset.columns != 'area']
+    Y = dataset[['area']]
+    return X,Y
 
 def main():
-    dataset = readData()
-    test = pd.get_dummies(dataset)
-    test
-    print(test)
+    rawDataset = readData()
+    dataset = pd.get_dummies(rawDataset)
+   
+    #print(dataset)
+    descriptiveFeatures, targetFeature = getFeatures(dataset)
+    """with pd.option_context('display.max_rows', None, 'display.max_columns', 30):
+        print(testY)"""
 
 
 if __name__ == '__main__':

@@ -1,10 +1,10 @@
 import os
 import pandas as pd
-from sklearn.model_selection import train_test_split, cross_val_predict, KFold
+from sklearn.model_selection import train_test_split, cross_val_score, KFold, cross_validate
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, make_scorer
 
 
 def dataPreperation(data):
@@ -21,16 +21,26 @@ def readData():
 def getFeatures(dataset):
     X = dataset.loc[:, dataset.columns != 'area']
     Y = dataset[['area']]
-    #Y.ix[Y.area > 0, 'area'] = 1
-    #Y.ix[Y.area < 0, 'area'] = 0
+    # Y.ix[Y.area > 0, 'area'] = 1
+    # Y.ix[Y.area < 0, 'area'] = 0
     Y.is_copy = False
     Y.loc[Y['area'] > 0, 'area'] = '1'
     Y.loc[Y['area'] == 0, 'area'] = '0'
     return X, Y
 
 
-def DecisionTreeClassifier(descriptiveFeatures, targetFeature):
-    pass
+def DecisionTree(descriptiveFeatures, targetFeature):
+    le = LabelEncoder()
+    targetFeature = targetFeature.apply(le.fit_transform)
+
+    scoring = {'acc': 'accuracy',
+               'prec_macro': 'precision_macro',
+               'rec_micro': 'recall_macro'}
+
+    clf = DecisionTreeClassifier()
+    scores = cross_validate(clf, descriptiveFeatures, targetFeature, scoring=scoring,
+                            cv=5, return_train_score=True)
+    print(scores)
 
 
 def NeuralNetworkClassifier(descriptiveFeatures, targetFeature):
@@ -63,8 +73,8 @@ def main():
     """with pd.option_context('display.max_rows', None, 'display.max_columns', 30):
         print(targetFeature)"""
 
-    NeuralNetworkClassifier(descriptiveFeatures, targetFeature)
-    DecisionTreeClassifier(deccriptiveFeatures, targetFeature)
+    # NeuralNetworkClassifier(descriptiveFeatures, targetFeature)
+    DecisionTree(descriptiveFeatures, targetFeature)
 
 
 if __name__ == '__main__':

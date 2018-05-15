@@ -50,7 +50,7 @@ def DecisionTree(descriptiveFeatures, targetFeature):
     plt.title('Decision Tree')
     plt.show()
 
-def NeuralNetworkClassifier(descriptiveFeatures, targetFeature):
+def NeuralNetworkClassifier(descriptiveFeatures, targetFeature, hiddenLayerSize, hiddenLayerNumber, iterationNumber):
     le = LabelEncoder()
 
     targetFeature = targetFeature.apply(le.fit_transform)
@@ -58,12 +58,16 @@ def NeuralNetworkClassifier(descriptiveFeatures, targetFeature):
     scoring = {'acc': 'accuracy',
                'prec_macro': 'precision_macro',
                'rec_micro': 'recall_macro'}
-    
-    mlp = MLPClassifier(hidden_layer_sizes=(29, 20, 1), max_iter=1000)
+
+    if(hiddenLayerNumber == 1):
+        mlp = MLPClassifier(hidden_layer_sizes=(hiddenLayerSize), max_iter=iterationNumber)
+    elif(hiddenLayerNumber == 2):
+        mlp = MLPClassifier(hidden_layer_sizes=(hiddenLayerSize,hiddenLayerSize*2), max_iter=iterationNumber)
+    else:
+        mlp = MLPClassifier(hidden_layer_sizes=(hiddenLayerSize,hiddenLayerSize*2,hiddenLayerSize), max_iter=iterationNumber)
 
     scores = cross_validate(mlp, descriptiveFeatures, targetFeature, scoring=scoring,
                             cv=5, return_train_score=False)
-
 
     names = list()
     values = list()
@@ -86,8 +90,14 @@ def main():
 
     descriptiveFeatures, targetFeature = getFeatures(dataset)
 
-    print("NEURAL NETWORK : ", end="\n")
-    NeuralNetworkClassifier(descriptiveFeatures, targetFeature)
+    print("NEURAL NETWORK (15) : ", end="\n")
+    NeuralNetworkClassifier(descriptiveFeatures, targetFeature, 15,1,1000) #NN with 15 hidden layer
+    print(end="\n")
+    print("NEURAL NETWORK (30,60) : ", end="\n")
+    NeuralNetworkClassifier(descriptiveFeatures, targetFeature, 30,2,2000) #NN with 15 hidden layer
+    print(end="\n")
+    print("NEURAL NETWORK (35,70,35) : ", end="\n")
+    NeuralNetworkClassifier(descriptiveFeatures, targetFeature, 35,3,500) #NN with 15 hidden layer
     print(end="\n")
     print("DECISION TREE : ", end="\n")
     DecisionTree(descriptiveFeatures, targetFeature)

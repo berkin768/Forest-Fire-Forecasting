@@ -5,6 +5,8 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, confusion_matrix, make_scorer
+
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -36,7 +38,10 @@ def DecisionTree(descriptiveFeatures, targetFeature):
     clf = DecisionTreeClassifier()
     scores = cross_validate(clf, descriptiveFeatures, targetFeature, scoring=scoring,
                             cv=5, return_train_score=False)
-    print(scores)
+
+    for key,val in scores.items():
+        print(key, end=' : ')
+        print(val)
 
 
 def NeuralNetworkClassifier(descriptiveFeatures, targetFeature):
@@ -52,14 +57,16 @@ def NeuralNetworkClassifier(descriptiveFeatures, targetFeature):
 
     scores = cross_validate(mlp, descriptiveFeatures, targetFeature, scoring=scoring,
                             cv=5, return_train_score=False)
-    print(scores)
+
+    for key,val in scores.items():
+        print(key, end=' : ')
+        print(val)
     
 
 def main():
     rawDataset = readData()
     dataset = pd.get_dummies(rawDataset)
 
-    # print(dataset)
     descriptiveFeatures, targetFeature = getFeatures(dataset)
 
     print("NEURAL NETWORK : ", end="\n")
